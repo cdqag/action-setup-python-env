@@ -64,25 +64,30 @@ runs:
 
     - if: ${{ inputs.install-poetry }}
       name: Install Poetry
+      shell: bash
       run: |
         pip install poetry==${{ inputs.poetry-version }}
 
     - if: ${{ inputs.index-url != '' }}
       name: Set index URL
+      shell: bash
       run: |
         echo "PIP_INDEX_URL=${{ inputs.index-url }}" >> $GITHUB_ENV
 
     - if: ${{ inputs.install-dependencies && inputs.install-poetry }}
       name: Install dependencies with poetry
+      shell: bash
       run: |
         poetry install
 
     - if: ${{ inputs.install-dependencies && !inputs.install-poetry }}
       name: Install dependencies with pip
+      shell: bash
       run: |
         pip install -r requirements.txt
 
     - if: ${{ inputs.install-packages != '' }}
       name: Install packages
+      shell: bash
       run: |
         pip install ${{ inputs.install-packages }}
