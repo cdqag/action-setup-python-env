@@ -1,0 +1,88 @@
+name: 'Setup Python Env'
+description: 'Setup Python Environment'
+
+author: "CDQ AG"
+branding:
+  icon: 'hard-drive'
+  color: 'blue'
+
+inputs:
+  python-version:
+    description: 'Version of Python to use'
+    default: '3.10'
+
+  setup-virtualenv:
+    description: 'Setup virtualenv'
+    default: false
+
+  virtualenv-dir:
+    description: 'Directory to setup virtualenv'
+    default: '.venv'
+
+  install-poetry:
+    description: 'Install Poetry'
+    default: false
+
+  poetry-version:
+    description: 'Version of Poetry to use'
+    default: '1.8.1'
+
+  index-url:
+    description: 'Index URL to set for pip - set empty to skip'
+    default: ''
+
+  install-dependencies:
+    description: 'Install dependencies - skip if false; if install-poetry is true, it will use poetry to install dependencies, otherwise pip'
+    default: true
+
+  install-packages:
+    description: 'Install packages'
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - if: ${{ inputs.setup-virtualenv }}
+      name: Setup Virtual Envitonment
+      shell: bash
+      run: |
+        if [ ! -x "$(command -v virtualenv)" ]; then
+          python -m pip install --user virtualenv
+        fi
+
+        if [ ! -d "${{ inputs.virtualenv-dir }}" ]; then
+          python -m virtualenv ${{ inputs.virtualenv-dir }}
+        fi
+
+        source ${{ inputs.virtualenv-dir }}/bin/activate
+        echo "PATH=$PATH" >> $GITHUB_ENV
+
+    - if: ${{ inputs.install-poetry }}
+      name: Install Poetry
+      run: |
+        pip install poetry==${{ inputs.poetry-version }}
+
+    - if: ${{ inputs.index-url != '' }}
+      name: Set index URL
+      run: |
+        echo "PIP_INDEX_URL=${{ inputs.index-url }}" >> $GITHUB_ENV
+
+    - if: ${{ inputs.install-dependencies && inputs.install-poetry }}
+      name: Install dependencies with poetry
+      run: |
+        poetry install
+
+    - if: ${{ inputs.install-dependencies && !inputs.install-poetry }}
+      name: Install dependencies with pip
+      run: |
+        pip install -r requirements.txt
+
+    - if: ${{ inputs.install-packages != '' }}
+      name: Install packages
+      run: |
+        pip install ${{ inputs.install-packages }}
