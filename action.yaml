@@ -9,34 +9,42 @@ branding:
 inputs:
   python-version:
     description: 'Version of Python to use'
+    type: string
     default: '3.10'
 
   setup-virtualenv:
     description: 'Setup virtualenv'
-    default: false
+    type: boolean
+    default: 'false'
 
   virtualenv-dir:
     description: 'Directory to setup virtualenv'
+    type: string
     default: '.venv'
 
   install-poetry:
     description: 'Install Poetry'
-    default: false
+    type: boolean
+    default: 'false'
 
   poetry-version:
     description: 'Version of Poetry to use'
+    type: string
     default: '1.8.1'
 
   index-url:
     description: 'Index URL to set for pip - set empty to skip'
+    type: string
     default: ''
 
   install-dependencies:
     description: 'Install dependencies - skip if false; if install-poetry is true, it will use poetry to install dependencies, otherwise pip'
-    default: true
+    type: boolean
+    default: 'true'
 
   install-packages:
     description: 'Install packages'
+    type: string
     default: ''
 
 runs:
@@ -47,7 +55,7 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    - if: ${{ inputs.setup-virtualenv }}
+    - if: ${{ inputs.setup-virtualenv == 'true' }}
       name: Setup Virtual Envitonment
       shell: bash
       run: |
@@ -62,7 +70,7 @@ runs:
         source ${{ inputs.virtualenv-dir }}/bin/activate
         echo "PATH=$PATH" >> $GITHUB_ENV
 
-    - if: ${{ inputs.install-poetry }}
+    - if: ${{ inputs.install-poetry == 'true' }}
       name: Install Poetry
       shell: bash
       run: |
@@ -74,13 +82,13 @@ runs:
       run: |
         echo "PIP_INDEX_URL=${{ inputs.index-url }}" >> $GITHUB_ENV
 
-    - if: ${{ inputs.install-dependencies && inputs.install-poetry }}
+    - if: ${{ inputs.install-dependencies == 'true' && inputs.install-poetry == 'true' }}
       name: Install dependencies with poetry
       shell: bash
       run: |
         poetry install
 
-    - if: ${{ inputs.install-dependencies && !inputs.install-poetry }}
+    - if: ${{ inputs.install-dependencies == 'true' && inputs.install-poetry != 'true' }}
       name: Install dependencies with pip
       shell: bash
       run: |
