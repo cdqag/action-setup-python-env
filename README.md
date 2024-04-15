@@ -7,7 +7,7 @@ Setup Python Environment.
 ## Usage
 
 ```yaml
-- uses: cdqag/setup-python-env@master
+- uses: cdqag/setup-python-env@v1
 ```
 
 ### Inputs
@@ -26,7 +26,7 @@ Setup Python Environment.
 ### Example
 
 ```yaml
-name: Example
+name: Setup virtualenv
 
 on:
   workflow_dispatch:
@@ -36,9 +36,12 @@ jobs:
     runs-on: my-self-hosted-runner
 
     steps:
-      - uses: cdqag/setup-python-env@master
+      - uses: cdqag/setup-python-env@v1
+        with:
+          setup-virtualenv: true
+          install-packages: flake8 pycodestyle
       - run: pip --version  # This should output also location of used pip (you should see path/.venv/bin/pip)
- 
+
 ```
 
 ## License
