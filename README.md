@@ -1,8 +1,13 @@
 # Setup Python Env
 
-> NOTICE: WORK IN PROGRESS
+This action:
 
-Setup Python Environment.
+* installs Python via [actions/setup-python@v5](https://github.com/actions/setup-python)
+* (optionally) installs and activated virtualenv
+* (optionally) installs [Poetry](https://python-poetry.org/)
+* (optionally) sets custom [index URL](https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-i)
+* (optionally) installs dependencies either via pip or Poetry
+* (optionally) installs additional packages
 
 ## Usage
 
