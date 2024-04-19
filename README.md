@@ -17,16 +17,17 @@ This action:
 
 ### Inputs
 
-| Name                   | Description                                            | Default    |
-|------------------------|--------------------------------------------------------|------------|
-| `python-version`       | Version of Python to use                               | `3.10`     |
-| `setup-virtualenv`     | Should setup virtualenv?                               | `false`    |
-| `virtualenv-dir`       | Directory to setup virtualenv                          | `.venv`    |
-| `install-poetry`       | Should install Poetry?                                 | `false`    |
-| `poetry-version`       | Version of Poetry to use                               | `1.8.1`    |
-| `index-url`            | Index URL to set for pip - set empty to skip           | ``         |
-| `install-dependencies` | Should install dependencies?                           | `true`     |
-| `install-packages`     | Install packages - set empty to skip                   | ``         |
+| Name                            | Description                                            | Default    |
+|---------------------------------|--------------------------------------------------------|------------|
+| `python-version`                | Version of Python to use                               | `3.10`     |
+| `use-local-python3-if-possible` | Should use local Python if possible?                   | `false`    |
+| `setup-virtualenv`              | Should setup virtualenv?                               | `false`    |
+| `virtualenv-dir`                | Directory to setup virtualenv                          | `.venv`    |
+| `install-poetry`                | Should install Poetry?                                 | `false`    |
+| `poetry-version`                | Version of Poetry to use                               | `1.8.1`    |
+| `index-url`                     | Index URL to set for pip - set empty to skip           | ``         |
+| `install-dependencies`          | Should install dependencies?                           | `true`     |
+| `install-packages`              | Install packages - set empty to skip                   | ``         |
 
 ### Example
 

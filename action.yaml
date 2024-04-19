@@ -9,48 +9,64 @@ branding:
 inputs:
   python-version:
     description: 'Version of Python to use'
-    type: string
     default: '3.10'
+
+  use-local-python3-if-possible:
+    description: 'Should use local Python 3 if possible?'
+    default: 'false'
 
   setup-virtualenv:
     description: 'Setup virtualenv'
-    type: boolean
     default: 'false'
 
   virtualenv-dir:
     description: 'Directory to setup virtualenv'
-    type: string
     default: '.venv'
 
   install-poetry:
     description: 'Install Poetry'
-    type: boolean
     default: 'false'
 
   poetry-version:
     description: 'Version of Poetry to use'
-    type: string
     default: '1.8.1'
 
   index-url:
     description: 'Index URL to set for pip - set empty to skip'
-    type: string
     default: ''
 
   install-dependencies:
     description: 'Install dependencies - skip if false; if install-poetry is true, it will use poetry to install dependencies, otherwise pip'
-    type: boolean
     default: 'true'
 
   install-packages:
     description: 'Install packages'
-    type: string
     default: ''
 
 runs:
   using: 'composite'
   steps:
-    - name: Setup Python
+    - name: Check available Python
+      id: check
+      shell: bash
+      env:
+        USE_LOCAL_PYTHON_IF_POSSIBLE: ${{ inputs.use-local-python3-if-possible }}
+      run: |
+        if [ "$USE_LOCAL_PYTHON_IF_POSSIBLE" == 'true' ]; then
+          if [ -x "$(command -v python3" ]; then
+            echo "Local Python 3 is available"
+            echo "localPython=true" >> $GITHUB_OUTPUT
+          else
+            echo "Local Python 3 is not available"
+            echo "localPython=false" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "Not using Python 3"
+          echo "localPython=false" >> $GITHUB_OUTPUT
+        fi
+
+    - if: ${{ steps.check.outputs.localPython != 'true' }}
+      name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
@@ -60,11 +76,11 @@ runs:
       shell: bash
       run: |
         if [ ! -x "$(command -v virtualenv)" ]; then
-          python -m pip install --user virtualenv
+          python3 -m pip install --user virtualenv
         fi
 
         if [ ! -d "${{ inputs.virtualenv-dir }}" ]; then
-          python -m virtualenv ${{ inputs.virtualenv-dir }}
+          python3 -m virtualenv ${{ inputs.virtualenv-dir }}
         fi
 
         source ${{ inputs.virtualenv-dir }}/bin/activate
