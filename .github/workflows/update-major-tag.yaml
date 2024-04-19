@@ -1,0 +1,13 @@
+name: Update Major Tag
+
+on:
+  release:
+    types:
+      - released
+      - edited
+
+jobs:
+  update-majorver:
+    runs-on: hosted-runner
+    steps:
+      - uses: cdqag/update-majorver@v1
