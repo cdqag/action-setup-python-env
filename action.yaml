@@ -74,17 +74,25 @@ runs:
     - if: ${{ inputs.setup-virtualenv == 'true' }}
       name: Setup Virtual Envitonment
       shell: bash
+      env:
+        VENV_DIR: ${{ inputs.virtualenv-dir }}
       run: |
         if [ ! -x "$(command -v virtualenv)" ]; then
           python3 -m pip install --user virtualenv
         fi
 
-        if [ ! -d "${{ inputs.virtualenv-dir }}" ]; then
-          python3 -m virtualenv ${{ inputs.virtualenv-dir }}
+        if [ ! -d "$VENV_DIR" ]; then
+          python3 -m virtualenv $VENV_DIR
         fi
 
-        source ${{ inputs.virtualenv-dir }}/bin/activate
-        echo "PATH=$PATH" >> $GITHUB_ENV
+        echo "PATH=$(pwd)/$VENV_DIR/bin:$PATH" >> $GITHUB_ENV
+
+    - name: DEBUG
+      shell: bash
+      run: |
+        echo "PATH=$PATH"
+        echo "PYTHONPATH=$PYTHONPATH"
+        which python3
 
     - if: ${{ inputs.install-poetry == 'true' }}
       name: Install Poetry
