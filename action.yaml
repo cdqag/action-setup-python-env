@@ -66,10 +66,20 @@ runs:
         fi
 
     - if: ${{ steps.check.outputs.localPython != 'true' }}
+      id: setup-python
       name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
+        update-environment: false
+
+    - if: ${{ steps.check.outputs.localPython != 'true' }}
+      name: Post installation
+      shell: bash
+      env:
+        PYTHON_PATH: ${{ steps.setup-python.outputs.python-path }}
+      run: |
+        echo "PATH=$PYTHON_PATH:$PATH" >> $GITHUB_ENV
 
     - if: ${{ inputs.setup-virtualenv == 'true' }}
       name: Setup Virtual Envitonment
