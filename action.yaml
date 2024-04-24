@@ -66,25 +66,36 @@ runs:
         fi
 
     - if: ${{ steps.check.outputs.localPython != 'true' }}
+      id: setup-python
       name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
+        update-environment: false
+
+    - if: ${{ steps.check.outputs.localPython != 'true' }}
+      name: Post installation
+      shell: bash
+      env:
+        PYTHON_PATH: ${{ steps.setup-python.outputs.python-path }}
+      run: |
+        echo "PATH=$PYTHON_PATH:$PATH" >> $GITHUB_ENV
 
     - if: ${{ inputs.setup-virtualenv == 'true' }}
       name: Setup Virtual Envitonment
       shell: bash
+      env:
+        VENV_DIR: ${{ inputs.virtualenv-dir }}
       run: |
         if [ ! -x "$(command -v virtualenv)" ]; then
           python3 -m pip install --user virtualenv
         fi
 
-        if [ ! -d "${{ inputs.virtualenv-dir }}" ]; then
-          python3 -m virtualenv ${{ inputs.virtualenv-dir }}
+        if [ ! -d "$VENV_DIR" ]; then
+          python3 -m virtualenv $VENV_DIR
         fi
 
-        source ${{ inputs.virtualenv-dir }}/bin/activate
-        echo "PATH=$PATH" >> $GITHUB_ENV
+        echo "PATH=$(pwd)/$VENV_DIR/bin:$PATH" >> $GITHUB_ENV
 
     - if: ${{ inputs.install-poetry == 'true' }}
       name: Install Poetry
