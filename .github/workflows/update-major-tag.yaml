@@ -3,8 +3,7 @@ name: Update Major Tag
 on:
   release:
     types:
-      - released
-      - edited
+      - published
 
 jobs:
   update-majorver:
