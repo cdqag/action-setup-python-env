@@ -9,7 +9,7 @@ branding:
 inputs:
   python-version:
     description: 'Version of Python to use'
-    default: '3.10'
+    default: '3.10.14'
 
   use-local-python3-if-possible:
     description: 'Should use local Python 3 if possible?'
