@@ -12,7 +12,7 @@ This action:
 ## Usage
 
 ```yaml
-- uses: cdqag/setup-python-env@v1
+- uses: cdqag/action-setup-python-env@v1
 ```
 
 ### Inputs
@@ -42,7 +42,7 @@ jobs:
     runs-on: my-self-hosted-runner
 
     steps:
-      - uses: cdqag/setup-python-env@v1
+      - uses: cdqag/action-setup-python-env@v1
         with:
           setup-virtualenv: true
           install-packages: flake8 pycodestyle
